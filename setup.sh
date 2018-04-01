@@ -50,14 +50,14 @@ fi
 
 echo "Creating Organisation"
 ORG_DATA=$(curl --silent --header "admin-auth: 12345" --header "Content-Type:application/json" --data '{"owner_name": "TestOrg5 Ltd.","owner_slug": "testorg", "cname_enabled":true, "cname": "'$TYK_PORTAL_DOMAIN'"}' http://$DOCKER_IP:3000/admin/organisations 2>&1)
-ORG_ID=$(echo $ORG_DATA | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Meta"]')
+ORG_ID=$(echo $ORG_DATA | python -c 'from __future__ import print_function;import json,sys;obj=json.load(sys.stdin);print(obj["Meta"])')
 echo "ORG ID: $ORG_ID"
 
 echo "Adding new user"
 USER_DATA=$(curl --silent --header "admin-auth: 12345" --header "Content-Type:application/json" --data '{"first_name": "John","last_name": "Smith","email_address": "'$TYK_DASHBOARD_USERNAME'","active": true,"org_id": "'$ORG_ID'"}' http://$DOCKER_IP:3000/admin/users 2>&1)
-USER_AUTH=$(echo $USER_DATA | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Message"]')
+USER_AUTH=$(echo $USER_DATA | python -c 'from __future__ import print_function;import json,sys;obj=json.load(sys.stdin);print(obj["Message"])')
 USER_LIST=$(curl --silent --header "authorization: $USER_AUTH" http://$DOCKER_IP:3000/api/users 2>&1)
-USER_ID=$(echo $USER_LIST | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["users"][0]["id"]')
+USER_ID=$(echo $USER_LIST | python -c 'from __future__ import print_function;import json,sys;obj=json.load(sys.stdin);print(obj["users"][0]["id"])')
 echo "USER AUTH: $USER_AUTH"
 echo "USER ID: $USER_ID"
 
@@ -66,7 +66,7 @@ OK=$(curl --silent --header "authorization: $USER_AUTH" --header "Content-Type:a
 
 echo "Setting up the Portal catalogue"
 CATALOGUE_DATA=$(curl --silent --header "Authorization: $USER_AUTH" --header "Content-Type:application/json" --data '{"org_id": "'$ORG_ID'"}' http://$DOCKER_IP:3000/api/portal/catalogue 2>&1)
-CATALOGUE_ID=$(echo $CATALOGUE_DATA | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["Message"]')
+CATALOGUE_ID=$(echo $CATALOGUE_DATA | python -c 'from __future__ import print_function;import json,sys;obj=json.load(sys.stdin);print(obj["Message"])')
 OK=$(curl --silent --header "Authorization: $USER_AUTH" http://$DOCKER_IP:3000/api/portal/catalogue 2>&1)
 
 echo "Creating the Portal Home page"
